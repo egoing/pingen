@@ -4,6 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import {makeStyles} from '@material-ui/core/styles';
 import {Button, Dialog, DialogActions, DialogContent, TextField} from "@material-ui/core";
 import {useState} from "react";
+import Split from 'react-split'
 
 
 const pingURL = 'https://docs.google.com/spreadsheets/d/1MsDJxO9xOHl8LE02n34n51hxwTA_usDn-Yta4Y84LeU/copy';
@@ -35,7 +36,7 @@ function App() {
     const [open, setOpen] = useState(false);
     const [url, setURL] = useState(null);
     const [urls, setURLS] = useState(
-        []
+        ['https://docs.google.com/spreadsheets/d/1vpi_A1zS1B4CICcBP53hoO1eGnr9JLBQmL4rmOn4Uw8/edit','https://docs.google.com/spreadsheets/d/1vpi_A1zS1B4CICcBP53hoO1eGnr9JLBQmL4rmOn4Uw8/edit']
     );
 
     const handleClose = () => {
@@ -56,9 +57,9 @@ function App() {
     console.log('iframes', iframes, 'classes.container', classes.container);
     return (
         <div className={classes.root}>
-            <div className={classes.container} style={{gridTemplateColumns: gridTemplateColumns}}>
+            <Split className="split">
                 {iframes}
-            </div>
+            </Split>
             <Fab color="primary" aria-label="add" className={classes.addBtn}>
                 <AddIcon onClick={() => {
                     console.log('click');

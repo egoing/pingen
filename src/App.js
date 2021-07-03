@@ -45,6 +45,9 @@ function App() {
         setURLS([...urls, url]);
         handleClose();
     }
+    const handleMake = () => {
+        window.open(pingURL);
+    }
 
 
     const iframes = urls.map((e, index) => {
@@ -61,8 +64,6 @@ function App() {
             </div>
             <Fab color="primary" aria-label="add" className={classes.addBtn}>
                 <AddIcon onClick={() => {
-                    console.log('click');
-                    window.open(pingURL);
                     setOpen(true);
                 }}/>
             </Fab>
@@ -88,6 +89,9 @@ function App() {
                     </Button>
                     <Button onClick={handleAdd} color="primary">
                         Add
+                    </Button>
+                    <Button onClick={handleMake} color="primary">
+                        Make
                     </Button>
                 </DialogActions>
             </Dialog>

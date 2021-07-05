@@ -4,6 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import {makeStyles} from '@material-ui/core/styles';
 import {Button, Dialog, DialogActions, DialogContent, TextField} from "@material-ui/core";
 import {useState} from "react";
+
 //import {short} from "node-url-shortener";
 const short = require("node-url-shortener");
 
@@ -80,7 +81,7 @@ function App() {
                             }
                         });
                         setURLS(newURLS);
-                    }}></div>
+                    }}><a href="">{urls[index].url}</a></div>
             }
         </div>
     })
@@ -110,7 +111,7 @@ function App() {
                             setURL(e.target.value);
                             console.log(e.target.value)
                         }}
-                        value={"https://docs.google.com/spreadsheets/d/1MsDJxO9xOHl8LE02n34n51hxwTA_usDn-Yta4Y84LeU/edit#gid=0"}
+                        value={url}
                     />
                 </DialogContent>
                 <DialogActions>

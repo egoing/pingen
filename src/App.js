@@ -17,7 +17,10 @@ const useStyles = makeStyles((theme) => ({
         display: 'grid',
         height:'100%'
     },
-    item: {},
+    item: {
+        border:'1px solid black',
+        position:'relative'
+    },
     iframe: {
         width: '100%',
         height: '100vh'
@@ -32,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
         height:'100%',
         backgroundColor:'gray',
         border:'5px solid black'
+    },
+    control:{
+        position:"absolute",
+        bottom:'0.1rem',
+        right:'0.1rem',
+        zIndex:10000
     }
 }));
 
@@ -68,25 +77,11 @@ function App() {
     }
     const iframes = urls.map((e, index) => {
         return <div key={index} className={classes.item}>
-            {
-                e.active ?
-                    <iframe src={e.url} className={classes.iframe}></iframe> :
-                    <div className={classes.cover} onClick={()=>{
-                        const _urls = [...urls];
-                        const newURLS = _urls.map((e2, index2)=>{
-                            if(index === index2){
-                                return {...e2, ...{active:true}};
-                            } else {
-                                return e2;
-                            }
-                        });
-                        setURLS(newURLS);
-                    }}><a href="">{urls[index].url}</a></div>
-            }
+            <iframe src={e.url} className={classes.iframe}></iframe>
+            <div className={classes.control}><a href={urls[index].url} target="_blank">{urls[index].url}</a></div>
         </div>
     })
     const gridTemplateColumns = urls.map((e) => '1fr').join(' ');
-    console.log('iframes', iframes, 'classes.container', classes.container);
     return (
         <div className={classes.root}>
             <div className={classes.container} style={{gridTemplateColumns: gridTemplateColumns}}>

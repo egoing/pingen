@@ -38,9 +38,11 @@ const useStyles = makeStyles((theme) => ({
     },
     control:{
         position:"absolute",
-        bottom:'0.1rem',
-        right:'0.1rem',
-        zIndex:10000
+        bottom:'1rem',
+        left:'1rem',
+        zIndex:10000,
+        fontSize:'2rem',
+        fontWeight:'bold'
     }
 }));
 
@@ -78,7 +80,16 @@ function App() {
     const iframes = urls.map((e, index) => {
         return <div key={index} className={classes.item}>
             <iframe src={e.url} className={classes.iframe}></iframe>
-            <div className={classes.control}><a href={urls[index].url} target="_blank">{urls[index].url}</a></div>
+            <div className={classes.control}
+                 onMouseEnter={(e)=>{
+                     console.log('e',e);
+                     e.target.style.opacity=0.1;
+                 }}
+                 onMouseLeave={(e)=>{
+                     console.log('e',e);
+                     e.target.style.opacity=1;
+                 }}
+            ><a href={urls[index].url} target="_blank">{urls[index].url}</a></div>
         </div>
     })
     const gridTemplateColumns = urls.map((e) => '1fr').join(' ');

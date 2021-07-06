@@ -43,6 +43,12 @@ const useStyles = makeStyles((theme) => ({
         zIndex:10000,
         fontSize:'2rem',
         fontWeight:'bold'
+    },
+    shortenURL:{
+        border:'none',
+        overflow:'visible',
+        fontSize:'1.5rem',
+        width:'20rem'
     }
 }));
 
@@ -72,6 +78,7 @@ function App() {
             const nextURL = new URL(window.location);
             nextURL.searchParams.set('p', JSON.stringify([...urls, {url:surl, title:null, active:false}]));
             window.history.pushState(null, null, nextURL);
+            setURL('');
         })
     }
     const handleMake = () => {
@@ -81,15 +88,7 @@ function App() {
         return <div key={index} className={classes.item}>
             <iframe src={e.url} className={classes.iframe}></iframe>
             <div className={classes.control}
-                 onMouseEnter={(e)=>{
-                     console.log('e',e);
-                     e.target.style.opacity=0.1;
-                 }}
-                 onMouseLeave={(e)=>{
-                     console.log('e',e);
-                     e.target.style.opacity=1;
-                 }}
-            ><a href={urls[index].url} target="_blank">{urls[index].url}</a></div>
+            ><input className={classes.shortenURL} type="text" value={urls[index].url} onClick={(e)=>{e.target.select();}}></input></div>
         </div>
     })
     const gridTemplateColumns = urls.map((e) => '1fr').join(' ');

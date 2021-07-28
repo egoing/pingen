@@ -104,7 +104,7 @@ function App() {
             </Fab>
             <Dialog open={open} onClose={handleClose}>
                 <DialogContent>
-                    복제한 ping 시트의 주소를 입력해주세요.
+                    추가 할 웹페이지의 주소를 입력해주세요.
                     <TextField
                         autoFocus
                         margin="dense"
@@ -120,14 +120,11 @@ function App() {
                     />
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={handleAdd} color="primary">
+                        웹페이지 추가
+                    </Button>
                     <Button onClick={handleClose} color="primary">
                         취소
-                    </Button>
-                    <Button onClick={handleAdd} color="primary">
-                        핑추가
-                    </Button>
-                    <Button onClick={handleMake} color="primary">
-                        핑복사
                     </Button>
                 </DialogActions>
             </Dialog>

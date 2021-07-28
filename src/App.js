@@ -5,6 +5,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Button, Dialog, DialogActions, DialogContent, IconButton, TextField} from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import {useState} from "react";
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 //import {short} from "node-url-shortener";
 const short = require("node-url-shortener");
@@ -58,20 +60,25 @@ const useStyles = makeStyles((theme) => ({
     deleteBtn:{
         padding:'0',
         verticalAlign:'middle'
+    },
+    activeBtnGp:{
+        position:'absolute',
+        top:'1px',
+        right:'1px',
+        zIndex:1000000,
+        fontSize:'2rem',
+        "& input":{
+            display:'block'
+        }
     }
 }));
 
 function App() {
     const classes = useStyles();
-
     const prevURLObj = new URL(window.location);
     const prevURL = prevURLObj.searchParams.get('p');
     var parsedURL = JSON.parse(prevURL);
     parsedURL = parsedURL === null ? [] : parsedURL;
-    parsedURL = parsedURL.map((e)=>{
-        e.active = false;
-        return e;
-    })
     const [open, setOpen] = useState(false);
     const [url, setURL] = useState(null);
     const [urls, setURLS] = useState(
@@ -83,9 +90,11 @@ function App() {
     const handleAdd = () => {
         handleClose();
         short.short(url, (err, surl)=>{
-            setURLS([...urls, {url:surl, title:null, active:true}]);
+            const id = Date.now();
+            let newData = [...urls, {id:id, url:surl, title:null, active:true}];
+            setURLS(newData);
             const nextURL = new URL(window.location);
-            nextURL.searchParams.set('p', JSON.stringify([...urls, {url:surl, title:null, active:false}]));
+            nextURL.searchParams.set('p', JSON.stringify(newData));
             window.history.pushState(null, null, nextURL);
             setURL('');
         })
@@ -93,28 +102,60 @@ function App() {
     const handleMake = () => {
         window.open(pingURL);
     }
+    function changeURL(urls){
+        const nextURL = new URL(window.location);
+        nextURL.searchParams.set('p', JSON.stringify(urls));
+        window.history.pushState(null, null, nextURL);
+        setURLS(urls);
+    }
+    const iframes = urls.map((mapElem, index) => {
+        console.log('display:mapElem.active', mapElem.active);
 
-    const iframes = urls.map((e, index) => {
-        return <div key={index} className={classes.item}>
-            <iframe src={e.url} className={classes.iframe}></iframe>
+        return <div key={mapElem.id} className={classes.item} style={{display:mapElem.active ? 'block' : 'none'}}>
+            <iframe src={mapElem.url} className={classes.iframe}></iframe>
             <div className={classes.control}
             >
                 <IconButton aria-label="delete" className={classes.deleteBtn} onClick={function () {
-                    const newURLS = [...urls].filter((e, i) => i !== index);
-                    const nextURL = new URL(window.location);
-                    nextURL.searchParams.set('p', JSON.stringify(newURLS));
-                    window.history.pushState(null, null, nextURL);
-                    setURLS(newURLS);
+                    const newURLS = [...urls].filter((filterElem, i) => mapElem.id !== filterElem.id);
+                    changeURL(newURLS);
                 }}>
                     <DeleteIcon fontSize="small" />
+                </IconButton>
+                <IconButton aria-label="visibility" className={classes.deleteBtn} onClick={function () {
+                    const newURLS = [...urls].map((mapElem2, i) => {
+                            if (mapElem.id === mapElem2.id) {
+                                mapElem2.active = false;
+                                return mapElem2;
+                            }
+                            return mapElem2;
+                        }
+                    );
+                    changeURL(newURLS);
+                }}>
+                    <VisibilityOffIcon fontSize="small" />
                 </IconButton>
                 <input className={classes.shortenURL} id="shortenName" type="text" value={urls[index].url} onClick={(e)=>{e.target.select();}}></input>
             </div>
         </div>
     })
-    const gridTemplateColumns = urls.map((e) => '1fr').join(' ');
+    const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
+    const activeBtn = urls.filter((e)=>e.active === false).map((e,i)=><input type="button" value={i} onClick={()=>{
+        console.log('e', e.id);
+        const newURLS = [...urls].map((mapElem2, i) => {
+                if (e.id === mapElem2.id) {
+                    mapElem2.active = true;
+                    return mapElem2;
+                }
+                return mapElem2;
+            }
+        );
+        changeURL(newURLS);
+    }}  />);
     return (
         <div className={classes.root}>
+            <div className={classes.activeBtnGp}>
+                {activeBtn}
+            </div>
             <div className={classes.container} style={{gridTemplateColumns: gridTemplateColumns}}>
                 {iframes}
             </div>

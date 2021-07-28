@@ -2,7 +2,8 @@ import './App.css';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import {makeStyles} from '@material-ui/core/styles';
-import {Button, Dialog, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, IconButton, TextField} from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
 import {useState} from "react";
 
 //import {short} from "node-url-shortener";
@@ -27,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
     addBtn: {
         position: 'absolute',
-        right: '1rem',
-        bottom: '1rem'
+        right: '0.2rem',
+        bottom: '0.2rem'
     },
     cover:{
         width:'100%',
@@ -38,17 +39,25 @@ const useStyles = makeStyles((theme) => ({
     },
     control:{
         position:"absolute",
-        bottom:'1rem',
-        left:'1rem',
+        bottom:'0',
+        left:'0',
         zIndex:10000,
         fontSize:'2rem',
-        fontWeight:'bold'
+        fontWeight:'bold',
+        paddingLeft:'2px',
+        backgroundColor:'rgba(255,255,255,0.5)'
     },
     shortenURL:{
         border:'none',
         overflow:'visible',
-        fontSize:'1.5rem',
-        width:'20rem'
+        fontSize:'1rem',
+        width:'12rem',
+        verticalAlign:'middle',
+        backgroundColor:'rgba(255,255,255,0)'
+    },
+    deleteBtn:{
+        padding:'0',
+        verticalAlign:'middle'
     }
 }));
 
@@ -84,11 +93,23 @@ function App() {
     const handleMake = () => {
         window.open(pingURL);
     }
+
     const iframes = urls.map((e, index) => {
         return <div key={index} className={classes.item}>
             <iframe src={e.url} className={classes.iframe}></iframe>
             <div className={classes.control}
-            ><input className={classes.shortenURL} type="text" value={urls[index].url} onClick={(e)=>{e.target.select();}}></input></div>
+            >
+                <IconButton aria-label="delete" className={classes.deleteBtn} onClick={function () {
+                    const newURLS = [...urls].filter((e, i) => i !== index);
+                    const nextURL = new URL(window.location);
+                    nextURL.searchParams.set('p', JSON.stringify(newURLS));
+                    window.history.pushState(null, null, nextURL);
+                    setURLS(newURLS);
+                }}>
+                    <DeleteIcon fontSize="small" />
+                </IconButton>
+                <input className={classes.shortenURL} id="shortenName" type="text" value={urls[index].url} onClick={(e)=>{e.target.select();}}></input>
+            </div>
         </div>
     })
     const gridTemplateColumns = urls.map((e) => '1fr').join(' ');

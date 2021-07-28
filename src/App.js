@@ -77,6 +77,8 @@ function App() {
     const classes = useStyles();
     const prevURLObj = new URL(window.location);
     const prevURL = prevURLObj.searchParams.get('p');
+    const prevMaxID = prevURLObj.searchParams.get('i');
+    var maxId = prevMaxID === null ? 0 : prevMaxID;
     var parsedURL = JSON.parse(prevURL);
     parsedURL = parsedURL === null ? [] : parsedURL;
     const [open, setOpen] = useState(false);
@@ -91,20 +93,19 @@ function App() {
         handleClose();
         short.short(url, (err, surl)=>{
             const id = Date.now();
-            let newData = [...urls, {id:id, url:surl, title:null, active:true}];
-            setURLS(newData);
-            const nextURL = new URL(window.location);
-            nextURL.searchParams.set('p', JSON.stringify(newData));
-            window.history.pushState(null, null, nextURL);
+            let newURLS = [...urls, {id:Number(maxId), url:surl, title:null, active:true}];
+            maxId++;
             setURL('');
+            changeURL(newURLS, maxId);
         })
     }
     const handleMake = () => {
         window.open(pingURL);
     }
-    function changeURL(urls){
+    function changeURL(urls, maxId){
         const nextURL = new URL(window.location);
         nextURL.searchParams.set('p', JSON.stringify(urls));
+        nextURL.searchParams.set('i', maxId);
         window.history.pushState(null, null, nextURL);
         setURLS(urls);
     }
@@ -139,8 +140,7 @@ function App() {
         </div>
     })
     const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
-    const activeBtn = urls.filter((e)=>e.active === false).map((e,i)=><input type="button" value={i} onClick={()=>{
-        console.log('e', e.id);
+    const activeBtn = urls.filter((e)=>e.active === false).map((e,i)=><input type="button" value={e.id} onClick={()=>{
         const newURLS = [...urls].map((mapElem2, i) => {
                 if (e.id === mapElem2.id) {
                     mapElem2.active = true;

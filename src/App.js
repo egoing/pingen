@@ -66,9 +66,8 @@ const useStyles = makeStyles((theme) => ({
         top:'1px',
         right:'1px',
         zIndex:1000000,
-        fontSize:'2rem',
         "& input":{
-            display:'block'
+            fontSize:'2rem'
         }
     }
 }));
@@ -77,8 +76,6 @@ function App() {
     const classes = useStyles();
     const prevURLObj = new URL(window.location);
     const prevURL = prevURLObj.searchParams.get('p');
-    const prevMaxID = prevURLObj.searchParams.get('i');
-    var maxId = prevMaxID === null ? 0 : prevMaxID;
     var parsedURL = JSON.parse(prevURL);
     parsedURL = parsedURL === null ? [] : parsedURL;
     const [open, setOpen] = useState(false);
@@ -93,19 +90,17 @@ function App() {
         handleClose();
         short.short(url, (err, surl)=>{
             const id = Date.now();
-            let newURLS = [...urls, {id:Number(maxId), url:surl, title:null, active:true}];
-            maxId++;
+            let newURLS = [...urls, {id:id, url:surl, title:null, active:true}];
             setURL('');
-            changeURL(newURLS, maxId);
+            changeURL(newURLS);
         })
     }
     const handleMake = () => {
         window.open(pingURL);
     }
-    function changeURL(urls, maxId){
+    function changeURL(urls){
         const nextURL = new URL(window.location);
         nextURL.searchParams.set('p', JSON.stringify(urls));
-        nextURL.searchParams.set('i', maxId);
         window.history.pushState(null, null, nextURL);
         setURLS(urls);
     }
@@ -140,11 +135,13 @@ function App() {
         </div>
     })
     const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
-    const activeBtn = urls.filter((e)=>e.active === false).map((e,i)=><input type="button" value={e.id} onClick={()=>{
+    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.5 : 0.1}} onClick={()=>{
         const newURLS = [...urls].map((mapElem2, i) => {
                 if (e.id === mapElem2.id) {
-                    mapElem2.active = true;
+                    mapElem2.active = !mapElem2.active;
                     return mapElem2;
+                } else {
+
                 }
                 return mapElem2;
             }

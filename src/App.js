@@ -69,6 +69,18 @@ const useStyles = makeStyles((theme) => ({
         "& input":{
             fontSize:'2rem'
         }
+    },
+    home:{
+        position:'absolute',
+        zIndex:100000,
+        top:'-6px',
+        "& a":{
+            fontFamily:"'Alfa Slab One', cursive",
+            textDecoration:'none',
+            fontSize:'0.1rem',
+            color:'black',
+            marginLeft:'0rem'
+        }
     }
 }));
 
@@ -105,8 +117,6 @@ function App() {
         setURLS(urls);
     }
     const iframes = urls.map((mapElem, index) => {
-        console.log('display:mapElem.active', mapElem.active);
-
         return <div key={mapElem.id} className={classes.item} style={{display:mapElem.active ? 'block' : 'none'}}>
             <iframe src={mapElem.url} className={classes.iframe}></iframe>
             <div className={classes.control}
@@ -150,6 +160,9 @@ function App() {
     }}  />);
     return (
         <div className={classes.root}>
+            <div className={classes.home}>
+                <a href="/">Iframe Union</a>
+            </div>
             <div className={classes.activeBtnGp}>
                 {activeBtn}
             </div>

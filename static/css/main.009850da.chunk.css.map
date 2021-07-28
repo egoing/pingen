@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA,KACI,QAAQ,CACR,SAAS,CACT,eACJ,CACA,EACI,qBACJ","file":"main.009850da.chunk.css","sourcesContent":["body{\n    margin:0;\n    padding:0;\n    overflow: hidden;\n}\n*{\n    box-sizing: border-box;\n}"]}

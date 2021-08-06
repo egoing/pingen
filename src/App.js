@@ -42,11 +42,11 @@ const useStyles = makeStyles((theme) => ({
     control:{
         position:"absolute",
         bottom:'0',
-        left:'0',
+        right:'0',
         zIndex:10000,
         fontSize:'2rem',
         fontWeight:'bold',
-        paddingLeft:'2px',
+        paddingLeft:'2px',˚
         backgroundColor:'rgba(255,255,255,0.5)'
     },
     shortenURL:{
@@ -145,14 +145,18 @@ function App() {
         </div>
     })
     const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
-    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.5 : 0.1}} onClick={()=>{
+    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.5 : 0.1}} onClick={(event)=>{
+        const selectedVisible = [...urls].filter((filterE)=>e.id === filterE.id)[0].active;
+        console.log('selectedVisible', selectedVisible);
         const newURLS = [...urls].map((mapElem2, i) => {
                 if (e.id === mapElem2.id) {
-                    mapElem2.active = !mapElem2.active;
-                    return mapElem2;
+                    mapElem2.active = !selectedVisible;
                 } else {
-
+                    if(event.altKey){
+                        mapElem2.active = selectedVisible;
+                    }
                 }
+                console.log(mapElem2.id, mapElem2.active);
                 return mapElem2;
             }
         );

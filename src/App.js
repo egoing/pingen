@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
         zIndex:10000,
         fontSize:'2rem',
         fontWeight:'bold',
-        paddingLeft:'2px',˚
+        paddingLeft:'2px',
         backgroundColor:'rgba(255,255,255,0.5)'
     },
     shortenURL:{

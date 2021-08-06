@@ -7,6 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {useState} from "react";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import Draggable from 'react-draggable';
 
 //import {short} from "node-url-shortener";
 const short = require("node-url-shortener");
@@ -31,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     addBtn: {
         position: 'absolute',
         right: '0.2rem',
-        bottom: '0.2rem'
+        bottom: '0.2rem',
+        zIndex:10000000
     },
     cover:{
         width:'100%',
@@ -52,8 +54,8 @@ const useStyles = makeStyles((theme) => ({
     shortenURL:{
         border:'none',
         overflow:'visible',
-        fontSize:'1rem',
-        width:'12rem',
+        fontSize:'1.3rem',
+        width:'16rem',
         verticalAlign:'middle',
         backgroundColor:'rgba(255,255,255,0)'
     },
@@ -119,33 +121,34 @@ function App() {
     const iframes = urls.map((mapElem, index) => {
         return <div key={mapElem.id} className={classes.item} style={{display:mapElem.active ? 'block' : 'none'}}>
             <iframe src={mapElem.url} className={classes.iframe}></iframe>
-            <div className={classes.control}
-            >
-                <IconButton aria-label="delete" className={classes.deleteBtn} onClick={function () {
-                    const newURLS = [...urls].filter((filterElem, i) => mapElem.id !== filterElem.id);
-                    changeURL(newURLS);
-                }}>
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-                <IconButton aria-label="visibility" className={classes.deleteBtn} onClick={function () {
-                    const newURLS = [...urls].map((mapElem2, i) => {
-                            if (mapElem.id === mapElem2.id) {
-                                mapElem2.active = false;
+            <Draggable>
+                <div className={classes.control}>
+                    <IconButton aria-label="delete" className={classes.deleteBtn} onClick={function () {
+                        const newURLS = [...urls].filter((filterElem, i) => mapElem.id !== filterElem.id);
+                        changeURL(newURLS);
+                    }}>
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton aria-label="visibility" className={classes.deleteBtn} onClick={function () {
+                        const newURLS = [...urls].map((mapElem2, i) => {
+                                if (mapElem.id === mapElem2.id) {
+                                    mapElem2.active = false;
+                                    return mapElem2;
+                                }
                                 return mapElem2;
                             }
-                            return mapElem2;
-                        }
-                    );
-                    changeURL(newURLS);
-                }}>
-                    <VisibilityOffIcon fontSize="small" />
-                </IconButton>
-                <input className={classes.shortenURL} id="shortenName" type="text" value={urls[index].url} onClick={(e)=>{e.target.select();}}></input>
-            </div>
+                        );
+                        changeURL(newURLS);
+                    }}>
+                        <VisibilityOffIcon fontSize="small" />
+                    </IconButton>
+                    <input className={classes.shortenURL} id="shortenName" type="text" value={urls[index].url} onClick={(e)=>{e.target.select();}}></input>
+                </div>
+            </Draggable>
         </div>
     })
     const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
-    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.5 : 0.1}} onClick={(event)=>{
+    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.7 : 0.1}} onClick={(event)=>{
         const selectedActive = [...urls].filter((filterE)=>e.id === filterE.id)[0].active;
         const newURLS = [...urls].map((mapElem2, i) => {
             if(event.altKey){
@@ -171,17 +174,17 @@ function App() {
             <div className={classes.home}>
                 <a href="/">Iframe Union</a>
             </div>
-            <div className={classes.activeBtnGp} title="Alt+클릭:다른창 숨기기, Shift+클릭:모든창 보이기">
-                {activeBtn}
-            </div>
+            <Draggable>
+                <div className={classes.activeBtnGp} title="Alt+클릭:다른창 숨기기, Shift+클릭:모든창 보이기">
+                    {activeBtn}
+                    <input type="button" value="+" style={{opacity:0.7}} onClick={(e) => {
+                        setOpen(true);
+                    }}></input>
+                </div>
+            </Draggable>
             <div className={classes.container} style={{gridTemplateColumns: gridTemplateColumns}}>
                 {iframes}
             </div>
-            <Fab color="primary" aria-label="add" className={classes.addBtn}>
-                <AddIcon onClick={() => {
-                    setOpen(true);
-                }}/>
-            </Fab>
             <Dialog open={open} onClose={handleClose}>
                 <DialogContent>
                     추가 할 웹페이지의 주소를 입력해주세요.

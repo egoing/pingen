@@ -146,17 +146,21 @@ function App() {
     })
     const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
     const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.5 : 0.1}} onClick={(event)=>{
-        const selectedVisible = [...urls].filter((filterE)=>e.id === filterE.id)[0].active;
-        console.log('selectedVisible', selectedVisible);
+        const selectedActive = [...urls].filter((filterE)=>e.id === filterE.id)[0].active;
         const newURLS = [...urls].map((mapElem2, i) => {
+            if(event.altKey){
                 if (e.id === mapElem2.id) {
-                    mapElem2.active = !selectedVisible;
+                    mapElem2.active = true;
                 } else {
-                    if(event.altKey){
-                        mapElem2.active = selectedVisible;
-                    }
+                    mapElem2.active = false;
                 }
-                console.log(mapElem2.id, mapElem2.active);
+            } else if(event.shiftKey){
+                mapElem2.active = true;
+            }else {
+                if (e.id === mapElem2.id) {
+                    mapElem2.active = !mapElem2.active;
+                }
+            }
                 return mapElem2;
             }
         );
@@ -167,7 +171,7 @@ function App() {
             <div className={classes.home}>
                 <a href="/">Iframe Union</a>
             </div>
-            <div className={classes.activeBtnGp}>
+            <div className={classes.activeBtnGp} title="Alt+클릭:다른창 숨기기, Shift+클릭:모든창 보이기">
                 {activeBtn}
             </div>
             <div className={classes.container} style={{gridTemplateColumns: gridTemplateColumns}}>

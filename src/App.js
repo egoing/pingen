@@ -75,13 +75,15 @@ const useStyles = makeStyles((theme) => ({
     home:{
         position:'absolute',
         zIndex:100000,
-        top:'-6px',
+        margin:'0.5rem',
+        opacity: 0.7,
+        backgroundColor:'rgba(255, 255, 255, 0.5)',
+        display:'none',
         "& a":{
             fontFamily:"'Alfa Slab One', cursive",
             textDecoration:'none',
-            fontSize:'0.1rem',
-            color:'black',
-            marginLeft:'0rem'
+            fontSize:'1rem',
+            color:'black'
         }
     }
 }));
@@ -108,9 +110,6 @@ function App() {
             setURL('');
             changeURL(newURLS);
         })
-    }
-    const handleMake = () => {
-        window.open(pingURL);
     }
     function changeURL(urls){
         const nextURL = new URL(window.location);
@@ -148,38 +147,68 @@ function App() {
         </div>
     })
     const gridTemplateColumns = urls.filter((e)=>e.active === true).map((e) => '1fr').join(' ');
-    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.7 : 0.1}} onClick={(event)=>{
-        const selectedActive = [...urls].filter((filterE)=>e.id === filterE.id)[0].active;
-        const newURLS = [...urls].map((mapElem2, i) => {
-            if(event.altKey){
-                if (e.id === mapElem2.id) {
-                    mapElem2.active = true;
-                } else {
-                    mapElem2.active = false;
+
+    function activeClickHandler(e) {
+        return (event) => {
+            if(isMoved(event.target))
+                return false;
+            const selectedActive = [...urls].filter((filterE) => e.id === filterE.id)[0].active;
+            const newURLS = [...urls].map((mapElem2, i) => {
+                    if (event.altKey) {
+                        if (e.id === mapElem2.id) {
+                            mapElem2.active = true;
+                        } else {
+                            mapElem2.active = false;
+                        }
+                    } else if (event.shiftKey) {
+                        mapElem2.active = true;
+                    } else {
+                        if (e.id === mapElem2.id) {
+                            mapElem2.active = !mapElem2.active;
+                        }
+                    }
+                    return mapElem2;
                 }
-            } else if(event.shiftKey){
-                mapElem2.active = true;
-            }else {
-                if (e.id === mapElem2.id) {
-                    mapElem2.active = !mapElem2.active;
-                }
-            }
-                return mapElem2;
-            }
-        );
-        changeURL(newURLS);
-    }}  />);
+            );
+            changeURL(newURLS);
+        };
+    }
+
+    const startMoveTraker = (target)=>{
+        var position = target.getBoundingClientRect();
+        target.dataset.x = position.x;
+        target.dataset.y = position.y;
+    }
+    const isMoved = (target)=>{
+        let position = target.getBoundingClientRect();
+        let prePosition = target.dataset;
+        if(position.x !== Number(prePosition.x) || position.y !== Number(prePosition.y)){
+            return true;
+        }
+        return false;
+    }
+    const activeBtn = urls.map((e,i)=><input type="button" value={i} style={{opacity:e.active ? 0.7 : 0.1}} onMouseDown={(event)=>{
+        startMoveTraker(event.target);
+    }} onClick={activeClickHandler(e)}  />);
     return (
         <div className={classes.root}>
-            <div className={classes.home}>
-                <a href="/">Iframe Union</a>
-            </div>
+            <Draggable>
+                <div className={classes.home}>
+                    <a href="/">Iframe Union</a>
+                </div>
+            </Draggable>
             <Draggable>
                 <div className={classes.activeBtnGp} title="Alt+클릭:다른창 숨기기, Shift+클릭:모든창 보이기">
                     {activeBtn}
-                    <input type="button" value="+" style={{opacity:0.7}} onClick={(e) => {
-                        setOpen(true);
-                    }}></input>
+                    <input type="button" value="+" style={{opacity:0.7}}
+                           onMouseDown={(event)=>{
+                                startMoveTraker(event.target);
+                           }}
+                           onClick={(event) => {
+                               if(isMoved(event.target))
+                                   return false;
+                               setOpen(true);
+                           }}></input>
                 </div>
             </Draggable>
             <div className={classes.container} style={{gridTemplateColumns: gridTemplateColumns}}>

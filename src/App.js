@@ -220,7 +220,7 @@ function App() {
             </div>
             <Dialog open={open} onClose={handleClose}>
                 <DialogContent>
-                    웹페이지의 주소를 입력해주세요.
+                    표시 할 웹페이지의 주소를 입력해주세요.
                     <TextField
                         autoFocus
                         margin="dense"

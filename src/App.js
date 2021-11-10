@@ -104,12 +104,16 @@ function App() {
     };
     const handleAdd = () => {
         handleClose();
-        short.short(url, (err, surl)=>{
-            const id = Date.now();
-            let newURLS = [...urls, {id:id, url:surl, title:null, active:true}];
-            setURL('');
-            changeURL(newURLS);
-        })
+        // short.short(url, (err, surl)=>{
+        //     const id = Date.now();
+        //     let newURLS = [...urls, {id:id, url:surl, title:null, active:true}];
+        //     setURL('');
+        //     changeURL(newURLS);
+        // })
+        const id = Date.now();
+        let newURLS = [...urls, {id:id, url:url, title:null, active:true}];
+        setURL('');
+        changeURL(newURLS);
     }
     function changeURL(urls){
         const nextURL = new URL(window.location);
